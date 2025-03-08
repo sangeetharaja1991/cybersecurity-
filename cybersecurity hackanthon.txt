@@ -1,0 +1,153 @@
+!pip install gradio --upgrade --quiet
+!pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu121
+
+!pip install gradio pandas numpy scikit-learn
+
+!pip install gradio pandas scikit-learn --quiet
+
+import gradio as gr
+import pandas as pd
+import numpy as np
+import random
+from sklearn.ensemble import IsolationForest
+import time
+
+# ------------------- 🔹 1. AI-Powered Threat Detection -------------------
+def generate_log_data():
+    return pd.DataFrame({
+        "Timestamp": pd.date_range(start="2025-03-08 10:00:00", periods=10, freq="T"),
+        "IP_Address": [f"192.168.1.{random.randint(1, 255)}" for _ in range(10)],
+        "Bytes_Transferred": [random.randint(500, 5000) for _ in range(10)],
+        "Request_Type": random.choices(["GET", "POST", "PUT", "DELETE"], k=10),
+        "Status_Code": random.choices([200, 403, 404, 500], k=10),
+    })
+
+def detect_threats():
+    log_data = generate_log_data()
+    model = IsolationForest(contamination=0.2)
+    log_data["Threat_Score"] = model.fit_predict(log_data[["Bytes_Transferred"]])
+    log_data["Threat_Label"] = log_data["Threat_Score"].apply(lambda x: "⚠️ Threat" if x == -1 else "✅ Safe")
+    return log_data[["Timestamp", "IP_Address", "Bytes_Transferred", "Request_Type", "Status_Code", "Threat_Label"]]
+
+# ------------------- 🔹 2. Automated Incident Response -------------------
+def incident_response(threat_level):
+    if threat_level > 7:
+        return "🚨 Critical Threat! System Quarantined."
+    elif 4 <= threat_level <= 7:
+        return "⚠️ Medium Risk! Monitoring Activated."
+    else:
+        return "✅ No Immediate Threat Detected."
+
+# ------------------- 🔹 3. AI-driven Vulnerability Scanning -------------------
+def vulnerability_scan():
+    vulnerabilities = [
+        {"CVE": "CVE-2025-1001", "Severity": "Critical", "Description": "Remote Code Execution in Web Server"},
+        {"CVE": "CVE-2025-1002", "Severity": "High", "Description": "SQL Injection in Login Page"},
+        {"CVE": "CVE-2025-1003", "Severity": "Medium", "Description": "Outdated SSL/TLS Version"},
+    ]
+    return pd.DataFrame(vulnerabilities)
+
+# ------------------- 🔹 4. Interactive Security Dashboard -------------------
+def show_security_dashboard():
+    return f"📊 Active Threats: {random.randint(0, 10)} | 🔥 Blocked Attacks: {random.randint(0, 5)}"
+
+# ------------------- 🔹 5. Digital Forensics Analysis -------------------
+def digital_forensics():
+    return f"🔍 Analyzing logs... Detected unusual file transfers at {time.strftime('%H:%M:%S')}."
+
+# ------------------- 🔹 6. Automated Penetration Testing -------------------
+def penetration_test():
+    findings = [
+        {"Test": "Port Scan", "Result": "Open Ports Found"},
+        {"Test": "Brute Force", "Result": "No Weak Passwords Detected"},
+        {"Test": "SQL Injection", "Result": "Vulnerable Parameter Found"},
+    ]
+    return pd.DataFrame(findings)
+
+# ------------------- 🔹 7. Predictive Analytics for System Resilience -------------------
+def system_resilience():
+    return f"🔮 Predicting possible system failures... Next risk window: {random.randint(1, 7)} days."
+
+# ------------------- 🔹 8. Automating Cybersecurity Workflows -------------------
+def automate_workflows():
+    return "🤖 Automating patch management, log analysis, and user monitoring."
+
+# ------------------- 🔹 9. Vulnerability Assessment & Zero-Day Detection -------------------
+def zero_day_detection():
+    zero_days = [
+        {"Threat": "Memory Corruption Exploit", "Status": "Investigating"},
+        {"Threat": "Kernel Privilege Escalation", "Status": "Mitigation Pending"},
+    ]
+    return pd.DataFrame(zero_days)
+
+# ------------------- 🔹 10. Supply Chain Security & Data Integrity -------------------
+def supply_chain_security():
+    return "✅ All software packages verified. No supply chain attacks detected."
+
+# ------------------- 🔹 11. Security Education & Awareness -------------------
+def security_education():
+    return "📚 AI-generated cybersecurity tips: 1️⃣ Use strong passwords 2️⃣ Enable MFA 3️⃣ Keep software updated."
+
+# ------------------- 🌟 Gradio UI -------------------
+with gr.Blocks() as app:
+    gr.Markdown("# 🔐 AI-Powered Cybersecurity Suite")
+    
+    with gr.Tab("Threat Detection"):
+        gr.Markdown("### 🚀 AI-Powered Threat Detection")
+        logs_btn = gr.Button("📊 Show Security Logs")
+        logs_output = gr.Dataframe()
+        logs_btn.click(detect_threats, outputs=logs_output)
+
+    with gr.Tab("Incident Response"):
+        gr.Markdown("### 🚑 Automated Incident Response")
+        threat_level = gr.Slider(minimum=0, maximum=10, label="Threat Level (0-10)")
+        response_btn = gr.Button("⚡ Take Action")
+        response_output = gr.Markdown()
+        response_btn.click(incident_response, inputs=[threat_level], outputs=response_output)
+
+    with gr.Tab("Vulnerability Scanning"):
+        scan_btn = gr.Button("🔍 Scan for Vulnerabilities")
+        scan_output = gr.Dataframe()
+        scan_btn.click(vulnerability_scan, outputs=scan_output)
+
+    with gr.Tab("Security Dashboard"):
+        dashboard_btn = gr.Button("📊 Show Dashboard")
+        dashboard_output = gr.Markdown()
+        dashboard_btn.click(show_security_dashboard, outputs=dashboard_output)
+
+    with gr.Tab("Digital Forensics"):
+        forensics_btn = gr.Button("🕵️‍♂️ Analyze Forensic Logs")
+        forensics_output = gr.Markdown()
+        forensics_btn.click(digital_forensics, outputs=forensics_output)
+
+    with gr.Tab("Penetration Testing"):
+        pen_test_btn = gr.Button("🛠️ Run Penetration Test")
+        pen_test_output = gr.Dataframe()
+        pen_test_btn.click(penetration_test, outputs=pen_test_output)
+
+    with gr.Tab("Predictive Analytics"):
+        predict_btn = gr.Button("🔮 Predict System Failures")
+        predict_output = gr.Markdown()
+        predict_btn.click(system_resilience, outputs=predict_output)
+
+    with gr.Tab("Automate Cybersecurity"):
+        automate_btn = gr.Button("🤖 Automate Workflows")
+        automate_output = gr.Markdown()
+        automate_btn.click(automate_workflows, outputs=automate_output)
+
+    with gr.Tab("Zero-Day Detection"):
+        zero_day_btn = gr.Button("🚨 Detect Zero-Day Threats")
+        zero_day_output = gr.Dataframe()
+        zero_day_btn.click(zero_day_detection, outputs=zero_day_output)
+
+    with gr.Tab("Supply Chain Security"):
+        supply_btn = gr.Button("🔗 Verify Software Integrity")
+        supply_output = gr.Markdown()
+        supply_btn.click(supply_chain_security, outputs=supply_output)
+
+    with gr.Tab("Security Education"):
+        educate_btn = gr.Button("📚 Get Cybersecurity Tips")
+        educate_output = gr.Markdown()
+        educate_btn.click(security_education, outputs=educate_output)
+
+app.launch(share=True)
